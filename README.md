@@ -1,78 +1,155 @@
-# 🐍 Snake Game (JavaScript)
-
-Implementation of the classic game **"Snake"** on pure JavaScript using the **Canvas API**.
 
 ---
 
-## 📂 Code structure
+🐍 Snake Game (JavaScript)
 
-### Main variables
-- **gameBoard, ctx** – access to canvas and ego context.
-- **scoreText, resetBtn** – elements for displaying the score and the reset button.
-- **gameWidth, gameHeight** – dimensions of the playing field.
-- **unitSize** – the size of one snake segment (25px).
-- **running** – game status flag.
-- **xVelocity, yVelocity** – the direction of the snake's movement.
-- **foodX, foodY** – food coordinates.
-- **score** – the current number of points.
-- **snake** – an array of snake segments.
+Classic Snake game implemented using pure JavaScript and the Canvas API.
+
+Control the snake to collect food, grow longer, and avoid running into walls or yourself.
+
 
 ---
 
-### Functions
+📂 Code Structure
 
-- **createFood()** 
-Creates food in a random position on the playing field.
+Main Variables
 
-- **drawFood()** 
-Drawing of food in the form of a circle with a radial gradient.
+gameBoard, ctx – access to the canvas and its drawing context.
 
-- **gameStart()** 
-Starts the game: resets the score, creates food, starts the `nextTick()` cycle.
+scoreText, resetBtn – elements to display the score and reset button.
 
-- **nextTick()** 
-The main cycle of the game: clears the field, moves the snake, draws it and checks the end of the game.
+gameWidth, gameHeight – dimensions of the game field.
 
-- **clearBoard()** 
-Clears the field and fills it with a background (gradient).
+unitSize – size of one snake segment (25px).
 
-- **drawSnake()** 
-Drawing of a snake (head – dark green, body – light green).
+running – flag indicating if the game is running.
 
-- **moveSnake()** 
-Adds a new segment (head) and removes the last one if no food is eaten.
+xVelocity, yVelocity – snake movement direction.
 
-- **changeDirection(event)** 
-Changes the direction of the snake by pressing the arrows, prevents turning back.
+foodX, foodY – coordinates of the food.
 
-- **checkGameOver()** 
-Checks collisions with walls and itself.
+score – current score.
 
-- **displayGameOver()** 
-Displays the text **GAME OVER** in the center of the screen.
+snake – array of snake segments.
 
-- **resetGame()** 
-Resets the state of the game (points, position of the snake) and starts it again.
+
 
 ---
 
-## 🎹 Management
-- ⬆️ `ArrowUp' – up
-- ⬇️ `ArrowDown' – down
-- ⬅️ `ArrowLeft' – to the left
-- ➡️ `ArrowRight' - to the right
+Functions
+
+createFood()
+
+Generates food at a random position on the board.
+Coordinates are multiples of unitSize to align with the snake.
+
+drawFood()
+
+Draws food as a circle with a radial gradient for visual effect.
+
+gameStart()
+
+Starts the game:
+
+resets the score,
+
+creates food,
+
+starts the main game loop with nextTick().
+
+
+nextTick()
+
+Main game loop:
+
+1. Clears the board (clearBoard()),
+
+
+2. Draws the food (drawFood()),
+
+
+3. Moves the snake (moveSnake()),
+
+
+4. Draws the snake (drawSnake()),
+
+
+5. Checks for game over (checkGameOver()),
+
+
+6. Recursively calls itself every 100ms if the game is still running.
+
+
+
+clearBoard()
+
+Clears the board and adds a linear gradient background.
+
+drawSnake()
+
+Draws the snake:
+
+Head – dark green
+
+Body – light green
+
+With a stroke outline for contrast.
+
+
+moveSnake()
+
+Updates the snake's position:
+
+Adds a new head based on the current direction.
+
+If the snake eats food – increases score and creates new food.
+
+Otherwise, removes the last segment to maintain length.
+
+
+changeDirection(event)
+
+Controls the snake with arrow keys:
+
+LEFT (37), UP (38), RIGHT (39), DOWN (40)
+
+Prevents moving in the opposite direction.
+
+
+checkGameOver()
+
+Checks if:
+
+the snake hits a wall,
+
+the snake collides with itself.
+If so, sets running = false.
+
+
+displayGameOver()
+
+Displays "GAME OVER" centered on the board with shadow effects.
+
+resetGame()
+
+Resets the game:
+
+resets the score,
+
+returns the snake to its initial position,
+
+calls gameStart() to restart.
+
+
 
 ---
 
-## 🛠 Used technologies
-- **JavaScript (ES6+)**
-- **Canvas API**
+⚡ Features
 
----
+Uses Canvas API to render the snake and food.
 
-## 🚀 Features
-- Beautiful gradient background.
-- Food in the form of a gradient circle.
-- A snake with rounded corners.
-- **GAME OVER** screen with text shadow.
-- Ability to reset the game with the Reset button.
+Pure JavaScript, no external libraries.
+
+Smooth snake movement with recursive setTimeout.
+
+Easy reset with a button.
