@@ -1,155 +1,131 @@
+# 🐍 Snake Game (JavaScript)
 
----
-
-🐍 Snake Game (JavaScript)
-
-Classic Snake game implemented using pure JavaScript and the Canvas API.
+Classic Snake game implemented using **pure JavaScript** and the **Canvas API**.
 
 Control the snake to collect food, grow longer, and avoid running into walls or yourself.
 
+---
+
+## 📂 Code Structure
+
+### Main Variables
+
+- `const gameBoard = document.getElementById("gameBoard")` – access to the canvas.  
+- `const ctx = gameBoard.getContext("2d")` – canvas drawing context.  
+- `const scoreText = document.getElementById("scoreText")` – element to display score.  
+- `const resetBtn = document.getElementById("resetBtn")` – element for reset button.  
+- `const unitSize = 25` – size of each snake segment.  
+- `let running = false` – flag indicating if the game is running.  
+- `let xVelocity = unitSize, yVelocity = 0` – initial movement to the right.  
+- `let foodX, foodY` – food coordinates.  
+- `let score = 0` – current score.  
+- `let snake = [{ x: unitSize * 4, y: 0 }, { x: unitSize * 3, y: 0 }, { x: unitSize * 2, y: 0 }, { x: unitSize, y: 0 }, { x: 0, y: 0 }]` – initial snake segments.  
 
 ---
 
-📂 Code Structure
+### Functions
 
-Main Variables
-
-gameBoard, ctx – access to the canvas and its drawing context.
-
-scoreText, resetBtn – elements to display the score and reset button.
-
-gameWidth, gameHeight – dimensions of the game field.
-
-unitSize – size of one snake segment (25px).
-
-running – flag indicating if the game is running.
-
-xVelocity, yVelocity – snake movement direction.
-
-foodX, foodY – coordinates of the food.
-
-score – current score.
-
-snake – array of snake segments.
-
-
-
----
-
-Functions
-
-createFood()
-
-Generates food at a random position on the board.
-Coordinates are multiples of unitSize to align with the snake.
+- `createFood()`  
+```js
+function createFood() {
+  function randomFood(min, max) {
+    return Math.round((Math.random() * (max - min) + min) / unitSize) * unitSize;
+  }
+  foodX = randomFood(0, gameWidth - unitSize);
+  foodY = randomFood(0, gameHeight - unitSize);
+}
 
 drawFood()
 
-Draws food as a circle with a radial gradient for visual effect.
+
+function drawFood() {
+  const radius = unitSize / 2;
+  ctx.beginPath();
+  ctx.arc(foodX + radius, foodY + radius, radius, 0, Math.PI * 2);
+  const gradient = ctx.createRadialGradient(foodX + radius - 5, foodY + radius - 5, 3, foodX + radius, foodY + radius, radius);
+  gradient.addColorStop(0, "#ff4d4d");
+  gradient.addColorStop(1, "#cc0000");
+  ctx.fillStyle = gradient;
+  ctx.fill();
+  ctx.closePath();
+}
 
 gameStart()
 
-Starts the game:
 
-resets the score,
-
-creates food,
-
-starts the main game loop with nextTick().
-
-
-nextTick()
-
-Main game loop:
-
-1. Clears the board (clearBoard()),
-
-
-2. Draws the food (drawFood()),
-
-
-3. Moves the snake (moveSnake()),
-
-
-4. Draws the snake (drawSnake()),
-
-
-5. Checks for game over (checkGameOver()),
-
-
-6. Recursively calls itself every 100ms if the game is still running.
-
-
-
-clearBoard()
-
-Clears the board and adds a linear gradient background.
-
-drawSnake()
-
-Draws the snake:
-
-Head – dark green
-
-Body – light green
-
-With a stroke outline for contrast.
-
+function gameStart() {
+  running = true;
+  scoreText.textContent = score;
+  createFood();
+  drawFood();
+  nextTick();
+}
 
 moveSnake()
 
-Updates the snake's position:
 
-Adds a new head based on the current direction.
-
-If the snake eats food – increases score and creates new food.
-
-Otherwise, removes the last segment to maintain length.
-
+function moveSnake() {
+  const head = { x: snake[0].x + xVelocity, y: snake[0].y + yVelocity };
+  snake.unshift(head);
+  if (snake[0].x == foodX && snake[0].y == foodY) {
+    score += 1;
+    scoreText.textContent = score;
+    createFood();
+  } else {
+    snake.pop();
+  }
+}
 
 changeDirection(event)
 
-Controls the snake with arrow keys:
 
-LEFT (37), UP (38), RIGHT (39), DOWN (40)
-
-Prevents moving in the opposite direction.
-
+function changeDirection(event) {
+  const LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
+  switch (event.keyCode) {
+    case LEFT: if (xVelocity == 0) { xVelocity = -unitSize; yVelocity = 0; } break;
+    case UP: if (yVelocity == 0) { xVelocity = 0; yVelocity = -unitSize; } break;
+    case RIGHT: if (xVelocity == 0) { xVelocity = unitSize; yVelocity = 0; } break;
+    case DOWN: if (yVelocity == 0) { xVelocity = 0; yVelocity = unitSize; } break;
+  }
+}
 
 checkGameOver()
 
-Checks if:
 
-the snake hits a wall,
-
-the snake collides with itself.
-If so, sets running = false.
-
-
-displayGameOver()
-
-Displays "GAME OVER" centered on the board with shadow effects.
+function checkGameOver() {
+  if (snake[0].x < 0 || snake[0].x >= gameWidth || snake[0].y < 0 || snake[0].y >= gameHeight) running = false;
+  for (let i = 1; i < snake.length; i++) {
+    if (snake[i].x == snake[0].x && snake[i].y == snake[0].y) running = false;
+  }
+}
 
 resetGame()
 
-Resets the game:
 
-resets the score,
-
-returns the snake to its initial position,
-
-calls gameStart() to restart.
-
+function resetGame() {
+  score = 0;
+  xVelocity = unitSize; yVelocity = 0;
+  snake = [{ x: unitSize * 4, y: 0 }, { x: unitSize * 3, y: 0 }, { x: unitSize * 2, y: 0 }, { x: unitSize, y: 0 }, { x: 0, y: 0 }];
+  gameStart();
+}
 
 
 ---
 
 ⚡ Features
 
-Uses Canvas API to render the snake and food.
+Smooth animation using Canvas API.
 
-Pure JavaScript, no external libraries.
+Responsive keyboard controls with arrow keys.
 
-Smooth snake movement with recursive setTimeout.
+Gradients for food and background.
 
-Easy reset with a button.
+Pure JavaScript, no libraries.
+
+Recursive setTimeout game loop.
+
+Dynamic score updates.
+
+Reset button to quickly restart.
+
+Handles collisions and game over cleanly.
